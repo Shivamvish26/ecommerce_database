@@ -1,16 +1,19 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
+const User = require("./db/users")
+const cors = require("cors")
 
-const connectDB = async () => {
-  mongoose.connect("mongodb://localhost:27017/e-commerce");
-  const productSchema = new mongoose.Schema({});
-  const product = mongoose.model("shop", productSchema);
-  const data = await product.find();
-  console.log(data);
-};
-connectDB();
+app.use(express.json())
+app.use(cors())
+
+require("./db/config")
+
+app.post("/register", async (req, resp) => {
+    let user = new User(req.body);
+    let result = await user.save();
+    resp.send(result)
+})
 
 app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+    console.log("Server is running on port 5000");
 });
